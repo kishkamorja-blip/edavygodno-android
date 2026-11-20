@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#176b4d">
+<title>ЕдаВыгодно</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--green:#176b4d;--green2:#e8f4ed;--ink:#1b2921;--muted:#68776e;--line:#dce6df;--bg:#f3f7f4;--white:#fff;--amber:#fff3d9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--green);color:#fff;padding:18px max(16px,calc((100vw - 980px)/2));}
+header h1{margin:0;font-size:25px}header p{margin:3px 0 0;color:#dcefe5}
+main{max-width:980px;margin:auto;padding:16px}.tabs{display:flex;gap:8px;overflow:auto;margin:0 0 14px}
+button,.tab{border:0;border-radius:11px;padding:10px 14px;background:var(--green);color:#fff;font:inherit;font-weight:650;cursor:pointer}
+button.secondary,.tab{background:var(--green2);color:var(--green)}.tab.active{background:var(--green);color:#fff}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:14px}
+h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}
+label{display:block;font-weight:650;margin:9px 0 5px}input,select{width:100%;min-width:0;padding:11px;border:1px solid #cbd8cf;border-radius:10px;background:white;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.muted,.small{color:var(--muted);font-size:12px}.notice{background:var(--amber);color:#654c17;border-radius:12px;padding:12px;font-size:13px}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.product{border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.product-name{font-weight:700;min-height:42px}.price{font-size:20px;font-weight:800;color:var(--green)}
+.pill{display:inline-block;padding:4px 8px;border-radius:30px;background:#eef1ef;color:#4a594f;font-size:11px;width:max-content}
+.pill.user{background:#eaf0ff;color:#344f91}.pill.demo{background:#fff3d9;color:#79540b}.pill.file{background:#e4f5e9;color:#176b4d}
+.product button{margin-top:auto;width:100%}
+.toolbar{display:flex;gap:7px;overflow:auto;padding:3px 0 8px}.toolbar button{white-space:nowrap}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.total{font-size:22px;font-weight:850;margin-top:12px}
+.hidden{display:none!important}.empty{border:1px dashed #cbd8cf;border-radius:12px;padding:18px;text-align:center;color:var(--muted)}
+.stat{background:var(--green2);border-radius:12px;padding:11px}.stat b{display:block;font-size:19px;color:var(--green)}
+footer{max-width:980px;margin:auto;padding:0 16px 24px;color:var(--muted);font-size:12px}
+@media(max-width:560px){.grid,.grid3,.products{grid-template-columns:1fr}main{padding:12px}}
+</style>
+</head>
+<body>
+<header><h1>ЕдаВыгодно</h1><p>Планируй покупки и сравнивай стоимость корзины</p></header>
+<main>
+<nav class="tabs">
+<button class="tab active" data-page="catalog">Каталог</button>
+<button class="tab" data-page="basket">Корзина</button>
+<button class="tab" data-page="planner">План питания</button>
+<button class="tab" data-page="sources">Источники цен</button>
+</nav>
+
+<section id="page-catalog">
+<div class="panel">
+<h2>Где покупаем?</h2>
+<div class="grid">
+<div><label for="region">Регион России</label><input id="region" list="regions" placeholder="Например, Московская область"><datalist id="regions"><option>Москва</option><option>Московская область</option><option>Санкт-Петербург</option><option>Краснодарский край</option><option>Свердловская область</option><option>Республика Татарстан</option><option>Новосибирская область</option></datalist></div>
+<div><label for="city">Город</label><input id="city" placeholder="Например, Москва"></div>
+</div><div class="muted" id="locationText">Выбери город. Выбор сохраняется на этом устройстве.</div>
+</div>
+<div class="panel">
+<h2>Каталог продуктов</h2>
+<div class="toolbar" id="stores">
+<button class="secondary active" data-store="Все">Все магазины</button>
+<button class="secondary" data-store="Пятёрочка">Пятёрочка</button>
+<button class="secondary" data-store="Магнит">Магнит</button>
+<button class="secondary" data-store="ДИКСИ">ДИКСИ</button>
+<button class="secondary" data-store="Перекрёсток">Перекрёсток</button>
+</div>
+<input id="search" placeholder="Найти продукт…">
+<div class="toolbar" id="categories">
+<button class="secondary active" data-category="Все">Все категории</button>
+<button class="secondary" data-category="Молочные">Молочные</button>
+<button class="secondary" data-category="Мясо и колбасы">Мясо и колбасы</button>
+<button class="secondary" data-category="Бакалея">Бакалея</button>
+<button class="secondary" data-category="Овощи и фрукты">Овощи и фрукты</button>
+</div>
+<div class="muted" id="catalogMeta"></div>
+<div class="products" id="products"></div>
+</div>
+</section>
+
+<section id="page-basket" class="hidden">
+<div class="panel"><h2>Моя корзина</h2><div id="basketList" class="empty">Пока пусто. Добавь товары из каталога.</div>
+<div class="total" id="basketTotal"></div><div class="muted" id="basketMeta"></div>
+<button id="clearBasket" class="secondary" style="margin-top:12px">Очистить корзину</button></div>
+<div class="panel"><h2>Сравнение магазинов</h2><div id="comparison" class="empty">Добавь товары, чтобы сравнить стоимость.</div></div>
+</section>
+
+<section id="page-planner" class="hidden">
+<div class="panel"><h2>План питания и бюджет</h2>
+<div class="grid3">
+<div><label for="people">Людей</label><input id="people" type="number" min="1" max="20" value="2"></div>
+<div><label for="days">Дней</label><input id="days" type="number" min="1" max="31" value="7"></div>
+<div><label for="budget">Бюджет, ₽</label><input id="budget" type="number" min="0" value="7000"></div>
+</div>
+<label for="meals">Приёмы пищи</label><select id="meals"><option value="3">Завтрак, обед и ужин</option><option value="2">Обед и ужин</option><option value="1">Ужин</option></select>
+<label for="diet">Пожелания к питанию</label><input id="diet" placeholder="Например: без свинины, без орехов">
+<button id="makePlan" style="margin-top:12px">Рассчитать план</button>
+<div id="planResult" style="margin-top:12px" class="muted">Планировщик пока рассчитывает ориентировочный бюджет. Для рецептов и КБЖУ потребуется отдельная проверенная база состава продуктов.</div>
+</div></section>
+
+<section id="page-sources" class="hidden">
+<div class="panel"><h2>Подключение источников цен</h2>
+<p>Приложение подготовлено для загрузки каталогов в собственный интерфейс. Автоматический запрос цен к магазинам пока не включён: для него нужны разрешённый API или официальная выгрузка сети.</p>
+<div class="notice"><b>Не выдаём оценки за цены магазинов.</b> Каждая позиция помечается источником: пользовательская цена, импортированный файл или демонстрационная оценка.</div>
+<label for="catalogFile">Импорт каталога (.csv или .json)</label><input id="catalogFile" type="file" accept=".csv,.json,application/json,text/csv">
+<div id="importStatus" class="muted" style="margin-top:8px">CSV: name,store,category,price,unit,observed_at,city. JSON: массив объектов с такими полями.</div>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)">
+<h3>Загрузка из подключённого сервера</h3>
+<label for="apiBase">Адрес API</label>
+<input id="apiBase" value="http://127.0.0.1:8787" placeholder="https://адрес-твоего-сервера">
+<button id="loadServerCatalog" style="margin-top:10px">Загрузить цены выбранного города</button>
+<div id="serverStatus" class="muted" style="margin-top:8px">Серверный каталог ещё не запрашивался.</div>
+</div>
+<h3 style="margin-top:18px">Источники для дальнейшего подключения</h3>
+<ul>
+<li>Официальный каталог «Пятёрочки» — <a href="https://5ka.ru/catalog/" target="_blank" rel="noopener">5ka.ru</a></li>
+<li>Официальный каталог «Магнита» — <a href="https://magnit.ru/catalog" target="_blank" rel="noopener">magnit.ru</a></li>
+<li>Официальный каталог «Перекрёстка» — <a href="https://www.perekrestok.ru/catalog" target="_blank" rel="noopener">perekrestok.ru</a></li>
+</ul>
+</div>
+</section>
+</main>
+<footer>Цены в стартовом каталоге демонстрационные, кроме позиции, которую сообщил пользователь. Перед покупкой проверяй актуальную цену и наличие в выбранном магазине.</footer>
+<script>
+const products=[
+{id:1,name:"Папа Может Классическая, колбаса из мяса птицы, 300 г",store:"Пятёрочка",category:"Мясо и колбасы",price:86.99,unit:"300 г",source:"Со слов пользователя",kind:"user"},
+{id:2,name:"Молоко, 1 л",store:"Пятёрочка",category:"Молочные",price:95,unit:"1 л",source:"Демо-оценка",kind:"demo"},
+{id:3,name:"Яйца куриные, 10 шт.",store:"Магнит",category:"Молочные",price:109,unit:"10 шт.",source:"Демо-оценка",kind:"demo"},
+{id:4,name:"Гречка, 800 г",store:"ДИКСИ",category:"Бакалея",price:89,unit:"800 г",source:"Демо-оценка",kind:"demo"},
+{id:5,name:"Макароны, 450 г",store:"Перекрёсток",category:"Бакалея",price:79,unit:"450 г",source:"Демо-оценка",kind:"demo"},
+{id:6,name:"Яблоки, 1 кг",store:"Магнит",category:"Овощи и фрукты",price:150,unit:"1 кг",source:"Демо-оценка",kind:"demo"}
+];
+let cart=[],store="Все",category="Все",idCounter=20;
+const $=id=>document.getElementById(id);
+const money=n=>n.toLocaleString("ru-RU",{style:"currency",currency:"RUB"});
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function saveLocation(){let loc={region:$("region").value.trim(),city:$("city").value.trim()};localStorage.setItem("edav-location",JSON.stringify(loc));$("locationText").textContent=loc.city||loc.region?`Выбрано: ${[loc.city,loc.region].filter(Boolean).join(", ")}`:"Выбери город. Выбор сохраняется на этом устройстве."}
+try{let l=JSON.parse(localStorage.getItem("edav-location")||"{}");$("region").value=l.region||"";$("city").value=l.city||"";saveLocation()}catch(e){}
+["region","city"].forEach(x=>$(x).addEventListener("change",saveLocation));
+function renderCatalog(){let q=$("search").value.toLowerCase();let list=products.filter(p=>(store==="Все"||p.store===store)&&(category==="Все"||p.category===category)&&p.name.toLowerCase().includes(q));$("catalogMeta").textContent=`Найдено: ${list.length}. Импортировано: ${products.filter(p=>p.kind==="file").length}; демонстрационных оценок: ${products.filter(p=>p.kind==="demo").length}.`;
+$("products").innerHTML=list.length?list.map(p=>`<article class="product"><div class="muted">${esc(p.store)} · ${esc(p.category)}</div><div class="product-name">${esc(p.name)}</div><div class="price">${money(p.price)}</div><span class="pill ${p.kind}">${esc(p.source)}</span>${p.observed?`<div class="small">Обновлено: ${esc(p.observed)}</div>`:""}<button onclick="addToCart(${p.id})">В корзину</button></article>`).join(""):'<div class="empty">Ничего не найдено.</div>'}
+function addToCart(pid){let p=products.find(x=>x.id===pid),c=cart.find(x=>x.id===pid);if(c)c.qty++;else cart.push({...p,qty:1});renderCart()}
+function renderCart(){if(!cart.length){$("basketList").className="empty";$("basketList").textContent="Пока пусто. Добавь товары из каталога.";$("basketTotal").textContent="";$("basketMeta").textContent="";$("comparison").className="empty";$("comparison").textContent="Добавь товары, чтобы сравнить стоимость.";return}
+$("basketList").className="";$("basketList").innerHTML=cart.map(p=>`<div class="row"><div><b>${esc(p.name)}</b><div class="small">${esc(p.store)} · ${p.qty} шт. · ${esc(p.source)}</div></div><div style="text-align:right"><b>${money(p.price*p.qty)}</b><br><button class="secondary" onclick="removeFromCart(${p.id})">Убрать</button></div></div>`).join("");
+let total=cart.reduce((a,p)=>a+p.price*p.qty,0);$("basketTotal").textContent="Итого: "+money(total);$("basketMeta").textContent="Сумма предварительная: в ней могут быть демонстрационные цены.";
+let sums={};cart.forEach(p=>sums[p.store]=(sums[p.store]||0)+p.price*p.qty);
+$("comparison").className="";$("comparison").innerHTML=Object.entries(sums).sort((a,b)=>a[1]-b[1]).map(([s,v])=>`<div class="row"><b>${esc(s)}</b><b>${money(v)}</b></div>`).join("")+"<div class='small'>Это сумма товаров, уже добавленных из каждого магазина, а не гарантия самой дешёвой полной корзины: наличие и ассортимент требуют проверки.</div>"}
+function removeFromCart(pid){cart=cart.filter(x=>x.id!==pid);renderCart()}
+$("clearBasket").onclick=()=>{cart=[];renderCart()};
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x===b));["catalog","basket","planner","sources"].forEach(p=>$("page-"+p).classList.toggle("hidden",p!==b.dataset.page));});
+document.querySelectorAll("#stores button").forEach(b=>b.onclick=()=>{store=b.dataset.store;document.querySelectorAll("#stores button").forEach(x=>x.classList.toggle("active",x===b));renderCatalog()});
+document.querySelectorAll("#categories button").forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x===b));renderCatalog()});
+$("search").oninput=renderCatalog;
+$("makePlan").onclick=()=>{let n=Math.max(1,Number($("people").value)||1),d=Math.max(1,Number($("days").value)||1),b=Math.max(0,Number($("budget").value)||0),meals=Number($("meals").value),per=b/(n*d);$("planResult").innerHTML=`<div class="grid3"><div class="stat"><b>${money(b)}</b><span class="small">Общий бюджет</span></div><div class="stat"><b>${money(per)}</b><span class="small">На человека в день</span></div><div class="stat"><b>${n*d*meals}</b><span class="small">Приёмов пищи</span></div></div><p>Ориентир бюджета рассчитан на ${n} чел. × ${d} дн. × ${meals} приём(а/ов) пищи. Это пока финансовый расчёт, не готовое меню.</p>`};
+function parseCsv(text){let lines=text.replace(/^\\uFEFF/,"").split(/\\r?\\n/).filter(Boolean);if(lines.length<2)throw Error("В CSV нет строк товаров.");const split=line=>{let a=[],v="",q=false;for(let i=0;i<line.length;i++){let c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){v+='"';i++}else q=!q}else if(c===","&&!q){a.push(v);v=""}else v+=c}a.push(v);return a};let h=split(lines.shift()).map(x=>x.trim().toLowerCase());return lines.map(line=>{let a=split(line),o={};h.forEach((k,i)=>o[k]=(a[i]||"").trim());return o})}
+$("catalogFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let t=await f.text(),arr=f.name.toLowerCase().endsWith(".json")?JSON.parse(t):parseCsv(t);if(!Array.isArray(arr))throw Error("JSON должен содержать массив.");let count=0;for(let o of arr){let name=o.name||o.title,price=Number(String(o.price??"").replace(",","."));if(!name||!Number.isFinite(price)||price<=0)continue;products.push({id:idCounter++,name:String(name),store:String(o.store||"Не указан"),category:String(o.category||"Другое"),price,unit:String(o.unit||""),observed:String(o.observed_at||""),source:"Импорт из файла — проверь данные",kind:"file"});count++}if(!count)throw Error("Не нашёл строк с name и price.");$("importStatus").textContent=`Добавлено ${count} позиций. Данные из файла не проверяются автоматически; проверь город, магазин и дату обновления.`;renderCatalog()}catch(err){$("importStatus").textContent="Ошибка импорта: "+err.message}};
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+renderCatalog();renderCart();
+</script>
+
+<script>
+(function(){
+ const status=document.getElementById("serverStatus");
+ const btn=document.getElementById("loadServerCatalog");
+ if(!btn||!status)return;
+ btn.addEventListener("click",async()=>{
+   const city=(document.getElementById("city")?.value||"").trim();
+   const api=(document.getElementById("apiBase")?.value||"").trim().replace(/\/+$/,"");
+   if(!city){status.textContent="Сначала укажи город в верхней части приложения.";return;}
+   if(!api){status.textContent="Укажи адрес API-сервера.";return;}
+   status.textContent="Запрашиваю каталог для "+city+"…";
+   try{
+     const r=await fetch(api+"/api/catalog?city="+encodeURIComponent(city));
+     const data=await r.json();
+     if(!r.ok)throw new Error(data.error||("HTTP "+r.status));
+     let count=0;
+     for(const p of (data.products||[])){
+       if(!p.name||!p.price)continue;
+       const duplicate=products.some(x=>x.name===p.name&&x.store===p.store&&x.city===city&&x.serverItem===true);
+       if(duplicate)continue;
+       products.push({id:idCounter++,name:p.name,store:p.store,category:p.category||"Другое",
+         price:Number(p.price),unit:p.unit||"",source:p.source||"Серверный каталог",
+         kind:"file",observed:p.observed_at||"",city,serverItem:true});
+       count++;
+     }
+     renderCatalog();
+     status.textContent=count
+       ? "Добавлено с сервера: "+count+" позиций. Город: "+city+". Время ответа: "+(data.generated_at||"не указано")+"."
+       : "Сервер ответил, но новых позиций для города «"+city+"» нет. Проверь подключение источника и наличие данных.";
+   }catch(e){
+     status.textContent="Не удалось получить каталог: "+e.message+". Проверь, что сервер запущен и адрес API указан верно.";
+   }
+ });
+})();
+</script>
+
+</body></html>

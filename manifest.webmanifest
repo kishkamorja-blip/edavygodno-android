@@ -1,0 +1,10 @@
+{
+  "name": "ЕдаВыгодно — продукты и бюджет",
+  "short_name": "ЕдаВыгодно",
+  "lang": "ru",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f7f4",
+  "theme_color": "#176b4d",
+  "description": "Каталог продуктов, корзина и планирование бюджета"
+}

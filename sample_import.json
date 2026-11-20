@@ -1,0 +1,17 @@
+{
+  "products": [
+    {
+      "name": "Папа Может Классическая, колбаса из мяса птицы, 300 г",
+      "store": "Пятёрочка",
+      "category": "Мясо и колбасы",
+      "price": 86.99,
+      "unit": "300 г",
+      "city": "Москва",
+      "region": "Москва",
+      "observed_at": "2026-11-20T12:00:00+03:00",
+      "source": "user_report",
+      "source_url": "",
+      "status": "user_report"
+    }
+  ]
+}
